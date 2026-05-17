@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Your Name] | Learning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --obsidian: #0a0a0f; --void: #0f0e1a; --ember: #8b1a1a; --smolder: #c0392b;
+      --copper: #b87333; --brass: #d4a847; --arc: #00e5ff; --plasma: #7b2fff;
+      --fog: #e8e0d0; --ash: #9a9080;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--obsidian); color: var(--fog); font-family: 'Rajdhani', sans-serif; overflow-x: hidden; }
+    .circuit-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .circuit-bg svg { width: 100%; height: 100%; opacity: 0.05; }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 3rem;
+      background: linear-gradient(180deg, rgba(10,10,15,0.97) 0%, transparent 100%);
+      border-bottom: 1px solid rgba(180,115,51,0.15);
+    }
+    .nav-logo { font-family: 'Cinzel Decorative', serif; font-size: 0.9rem; color: var(--brass); letter-spacing: 0.15em; text-shadow: 0 0 20px rgba(212,168,71,0.4); }
+    .nav-links { display: flex; gap: 2.5rem; }
+    .nav-links a { font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; color: var(--ash); text-decoration: none; letter-spacing: 0.2em; text-transform: uppercase; transition: color 0.3s; position: relative; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px; background: var(--arc); transform: scaleX(0); transition: transform 0.3s; }
+    .nav-links a:hover { color: var(--arc); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--brass); }
+    .page-hero {
+      position: relative; z-index: 2; padding: 9rem 3rem 4rem;
+      border-bottom: 1px solid rgba(184,115,51,0.12);
+      background: linear-gradient(135deg, rgba(139,26,26,0.08) 0%, transparent 60%);
+    }
+    .breadcrumb { font-family: 'Share Tech Mono', monospace; font-size: 0.63rem; color: var(--ash); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 1.5rem; }
+    .breadcrumb span { color: var(--smolder); }
+    .page-title { font-family: 'Cinzel Decorative', serif; font-size: clamp(2rem, 5vw, 4.5rem); font-weight: 900; color: var(--fog); line-height: 1.1; margin-bottom: 1rem; }
+    .page-title em { color: var(--brass); font-style: normal; display: block; }
+    .page-intro { font-size: 1.05rem; line-height: 1.85; max-width: 600px; color: rgba(232,224,208,0.72); margin-top: 1.5rem; }
+    .content { position: relative; z-index: 2; padding: 5rem 3rem; }
+    .timeline { position: relative; padding-left: 2.5rem; }
+    .timeline::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 1px; background: linear-gradient(180deg, var(--ember), var(--plasma), transparent); }
+    .timeline-item { position: relative; margin-bottom: 4rem; }
+    .timeline-item::before { content: ''; position: absolute; left: -2.7rem; top: 0.35rem; width: 8px; height: 8px; border-radius: 50%; background: var(--brass); box-shadow: 0 0 12px var(--brass); }
+    .timeline-year { font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; color: var(--arc); letter-spacing: 0.25em; margin-bottom: 0.5rem; }
+    .timeline-year::before { content: '> '; color: var(--smolder); }
+    .timeline-degree { font-family: 'Cinzel Decorative', serif; font-size: 1.3rem; color: var(--fog); margin-bottom: 0.4rem; }
+    .timeline-institution { font-size: 1rem; color: var(--brass); letter-spacing: 0.1em; margin-bottom: 1rem; }
+    .timeline-body { font-size: 0.95rem; line-height: 1.8; color: var(--ash); max-width: 640px; }
+    .courses-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.5px; background: rgba(184,115,51,0.08); margin-top: 3rem; }
+    .course-card { background: var(--void); padding: 1.8rem; border-left: 2px solid transparent; transition: border-color 0.3s, background 0.3s; }
+    .course-card:hover { border-left-color: var(--ember); background: #14101c; }
+    .course-label { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--smolder); letter-spacing: 0.2em; margin-bottom: 0.6rem; display: block; }
+    .course-name { font-family: 'Rajdhani', sans-serif; font-weight: 700; font-size: 1rem; color: var(--brass); margin-bottom: 0.5rem; }
+    .course-desc { font-size: 0.88rem; line-height: 1.65; color: var(--ash); }
+    .cert-section { margin-top: 5rem; padding-top: 4rem; border-top: 1px solid rgba(184,115,51,0.1); }
+    .section-label { font-family: 'Share Tech Mono', monospace; font-size: 0.63rem; letter-spacing: 0.35em; color: var(--arc); text-transform: uppercase; margin-bottom: 0.9rem; }
+    .section-label::before { content: '// '; color: var(--smolder); }
+    .section-heading { font-family: 'Cinzel Decorative', serif; font-size: clamp(1.4rem, 2.8vw, 2.4rem); color: var(--fog); margin-bottom: 2.5rem; }
+    .cert-list { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+    .cert-item { background: var(--void); border: 1px solid rgba(184,115,51,0.1); padding: 1.6rem; display: flex; gap: 1rem; align-items: flex-start; transition: border-color 0.3s; }
+    .cert-item:hover { border-color: rgba(212,168,71,0.3); }
+    .cert-icon { font-family: 'Share Tech Mono', monospace; font-size: 1.4rem; color: var(--ember); flex-shrink: 0; }
+    .cert-name { font-weight: 700; color: var(--brass); font-size: 0.95rem; margin-bottom: 0.3rem; }
+    .cert-meta { font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; color: var(--ash); letter-spacing: 0.15em; }
+    .next-pull { position: relative; z-index: 2; text-align: center; padding: 5rem 3rem; border-top: 1px solid rgba(0,229,255,0.07); background: linear-gradient(180deg, transparent, rgba(139,26,26,0.05)); }
+    .next-pull p { font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; letter-spacing: 0.3em; color: var(--ash); text-transform: uppercase; margin-bottom: 1.4rem; }
+    .next-pull h2 { font-family: 'Cinzel Decorative', serif; font-size: clamp(1.3rem, 2.8vw, 2.2rem); color: var(--fog); margin-bottom: 2rem; line-height: 1.5; }
+    .next-pull h2 em { color: var(--brass); font-style: normal; }
+    .pulse-link { display: inline-block; font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--arc); text-decoration: none; border: 1px solid rgba(0,229,255,0.28); padding: 1rem 2.5rem; position: relative; overflow: hidden; transition: all 0.4s; }
+    .pulse-link::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(0,229,255,0.12), transparent 70%); animation: pglow 2.5s ease-in-out infinite; }
+    @keyframes pglow { 0%,100%{opacity:0.4;transform:scale(0.9)} 50%{opacity:1;transform:scale(1.1)} }
+    .pulse-link:hover { background: rgba(0,229,255,0.07); box-shadow: 0 0 40px rgba(0,229,255,0.25); }
+    footer { position: relative; z-index: 2; padding: 1.8rem 3rem; border-top: 1px solid rgba(184,115,51,0.08); display: flex; justify-content: space-between; align-items: center; }
+    footer span { font-family: 'Share Tech Mono', monospace; font-size: 0.63rem; color: rgba(154,144,128,0.45); letter-spacing: 0.12em; }
+    @media(max-width:768px){ nav{padding:1rem 1.5rem} .nav-links{gap:1rem} .page-hero,.content{padding-left:1.5rem;padding-right:1.5rem} footer{flex-direction:column;gap:0.7rem;text-align:center} }
+  </style>
+</head>
+<body>
+<div class="circuit-bg">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="120" x2="1440" y2="120" stroke="#00ff9d" stroke-width="0.8"/>
+    <line x1="0" y1="300" x2="1440" y2="300" stroke="#b87333" stroke-width="0.5"/>
+    <line x1="0" y1="500" x2="1440" y2="500" stroke="#00e5ff" stroke-width="0.8"/>
+    <line x1="0" y1="700" x2="1440" y2="700" stroke="#00ff9d" stroke-width="0.5"/>
+    <line x1="200" y1="0" x2="200" y2="900" stroke="#b87333" stroke-width="0.5"/>
+    <line x1="600" y1="0" x2="600" y2="900" stroke="#00e5ff" stroke-width="0.8"/>
+    <line x1="1000" y1="0" x2="1000" y2="900" stroke="#00ff9d" stroke-width="0.5"/>
+    <line x1="1300" y1="0" x2="1300" y2="900" stroke="#b87333" stroke-width="0.8"/>
+    <circle cx="200" cy="120" r="4" fill="#b87333"/>
+    <circle cx="600" cy="300" r="4" fill="#00e5ff"/>
+    <circle cx="1000" cy="500" r="4" fill="#00ff9d"/>
+    <circle cx="1300" cy="700" r="6" fill="none" stroke="#b87333" stroke-width="1.5"/>
+    <rect x="700" y="180" width="70" height="120" rx="3" fill="none" stroke="#00ff9d" stroke-width="0.8"/>
+    <line x1="700" y1="200" x2="680" y2="200" stroke="#00ff9d" stroke-width="0.8"/>
+    <line x1="700" y1="220" x2="680" y2="220" stroke="#00ff9d" stroke-width="0.8"/>
+    <line x1="700" y1="240" x2="680" y2="240" stroke="#00ff9d" stroke-width="0.8"/>
+    <line x1="700" y1="260" x2="680" y2="260" stroke="#00ff9d" stroke-width="0.8"/>
+    <line x1="770" y1="200" x2="790" y2="200" stroke="#00e5ff" stroke-width="0.8"/>
+    <line x1="770" y1="220" x2="790" y2="220" stroke="#00e5ff" stroke-width="0.8"/>
+    <line x1="770" y1="240" x2="790" y2="240" stroke="#00e5ff" stroke-width="0.8"/>
+    <line x1="770" y1="260" x2="790" y2="260" stroke="#00e5ff" stroke-width="0.8"/>
+  </svg>
+</div>
+
+<nav>
+  <div class="nav-logo">[YOUR.NAME]</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="learning.html" class="active">Learning</a>
+    <a href="about.html">About</a>
+    <a href="thoughts.html">Thoughts</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <p class="breadcrumb">HOME <span>/</span> LEARNING</p>
+  <h1 class="page-title">Academic<em>Architecture</em></h1>
+  <p class="page-intro">
+    The architecture of a mind is built one discipline at a time.
+    What follows is the structural record of that construction —
+    formal credentials, coursework, and continuous learning that
+    shaped a technologist who thinks as precisely as they build.
+  </p>
+</div>
+
+<div class="content">
+  <!-- DEGREE TIMELINE -->
+  <div class="section-label" style="margin-bottom:2rem">Academic Record</div>
+  <div class="timeline">
+
+    <div class="timeline-item">
+      <p class="timeline-year">[GRADUATION YEAR]</p>
+      <h2 class="timeline-degree">Bachelor of Science<br>Applied Information Technology</h2>
+      <p class="timeline-institution">[University Name] · [City, State]</p>
+      <p class="timeline-body">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt
+        ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco
+        laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit
+        in voluptate velit esse cillum dolore eu fugiat nulla pariatur.
+      </p>
+    </div>
+
+    <div class="timeline-item">
+      <p class="timeline-year">[YEAR RANGE]</p>
+      <h2 class="timeline-degree">[Additional Credential or Training]</h2>
+      <p class="timeline-institution">[Institution Name] · [Format: Online / In-person]</p>
+      <p class="timeline-body">
+        Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit
+        anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem
+        accusantium doloremque laudantium, totam rem aperiam eaque ipsa quae ab illo inventore
+        veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+      </p>
+    </div>
+
+    <div class="timeline-item">
+      <p class="timeline-year">[YEAR RANGE]</p>
+      <h2 class="timeline-degree">[Continuing Education / Professional Development]</h2>
+      <p class="timeline-institution">[Institution or Platform Name]</p>
+      <p class="timeline-body">
+        Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia
+        consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam
+        est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit.
+      </p>
+    </div>
+
+  </div>
+
+  <!-- COURSEWORK -->
+  <div style="margin-top: 4rem;">
+    <p class="section-label">Key Coursework</p>
+    <h2 class="section-heading" style="margin-bottom:0">Foundational Curriculum</h2>
+    <div class="courses-grid">
+      <div class="course-card">
+        <span class="course-label">CORE // 01</span>
+        <p class="course-name">[Course Title One]</p>
+        <p class="course-desc">Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor ut labore.</p>
+      </div>
+      <div class="course-card">
+        <span class="course-label">CORE // 02</span>
+        <p class="course-name">[Course Title Two]</p>
+        <p class="course-desc">Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip commodo.</p>
+      </div>
+      <div class="course-card">
+        <span class="course-label">CORE // 03</span>
+        <p class="course-name">[Course Title Three]</p>
+        <p class="course-desc">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat.</p>
+      </div>
+      <div class="course-card">
+        <span class="course-label">CORE // 04</span>
+        <p class="course-name">[Course Title Four]</p>
+        <p class="course-desc">Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit.</p>
+      </div>
+      <div class="course-card">
+        <span class="course-label">ELECTIVE // 05</span>
+        <p class="course-name">[Course Title Five]</p>
+        <p class="course-desc">Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque.</p>
+      </div>
+      <div class="course-card">
+        <span class="course-label">ELECTIVE // 06</span>
+        <p class="course-name">[Course Title Six]</p>
+        <p class="course-desc">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit consequuntur.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- CERTIFICATIONS -->
+  <div class="cert-section">
+    <p class="section-label">Credentials &amp; Certifications</p>
+    <h2 class="section-heading">Verified Competencies</h2>
+    <div class="cert-list">
+      <div class="cert-item">
+        <span class="cert-icon">◈</span>
+        <div>
+          <p class="cert-name">[Certification Name]</p>
+          <p class="cert-meta">[Issuing Body] · [YEAR]</p>
+        </div>
+      </div>
+      <div class="cert-item">
+        <span class="cert-icon">◈</span>
+        <div>
+          <p class="cert-name">[Certification Name]</p>
+          <p class="cert-meta">[Issuing Body] · [YEAR]</p>
+        </div>
+      </div>
+      <div class="cert-item">
+        <span class="cert-icon">◈</span>
+        <div>
+          <p class="cert-name">[Certification Name]</p>
+          <p class="cert-meta">[Issuing Body] · [YEAR]</p>
+        </div>
+      </div>
+      <div class="cert-item">
+        <span class="cert-icon">◈</span>
+        <div>
+          <p class="cert-name">[Certification Name]</p>
+          <p class="cert-meta">[Issuing Body] · [YEAR]</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="next-pull">
+  <p>// next transmission</p>
+  <h2>The credentials document the path.<br>The <em>person</em> defines the destination.</h2>
+  <a href="about.html" class="pulse-link">Enter the Biography →</a>
+</div>
+
+<footer>
+  <span>© [YEAR] [YOUR NAME] — ALL SYSTEMS OPERATIONAL</span>
+  <span>[YOUR.EMAIL@DOMAIN.COM]</span>
+</footer>
+</body>
+</html>

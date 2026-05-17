@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Your Name] | Thoughts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --obsidian: #0a0a0f; --void: #0f0e1a; --ember: #8b1a1a; --smolder: #c0392b;
+      --copper: #b87333; --brass: #d4a847; --arc: #00e5ff; --plasma: #7b2fff;
+      --fog: #e8e0d0; --ash: #9a9080;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--obsidian); color: var(--fog); font-family: 'Rajdhani', sans-serif; overflow-x: hidden; }
+    .circuit-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .circuit-bg svg { width: 100%; height: 100%; opacity: 0.05; }
+    .embers { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .ep { position: absolute; border-radius: 50%; animation: rise linear infinite; opacity: 0; }
+    @keyframes rise {
+      0%   { transform: translateY(100vh) scale(1);   opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.5; }
+      100% { transform: translateY(-10vh) scale(0.3); opacity: 0; }
+    }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 3rem;
+      background: linear-gradient(180deg, rgba(10,10,15,0.97) 0%, transparent 100%);
+      border-bottom: 1px solid rgba(180,115,51,0.15);
+    }
+    .nav-logo { font-family: 'Cinzel Decorative', serif; font-size: 0.9rem; color: var(--brass); letter-spacing: 0.15em; text-shadow: 0 0 20px rgba(212,168,71,0.4); }
+    .nav-links { display: flex; gap: 2.5rem; }
+    .nav-links a { font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; color: var(--ash); text-decoration: none; letter-spacing: 0.2em; text-transform: uppercase; transition: color 0.3s; position: relative; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px; background: var(--arc); transform: scaleX(0); transition: transform 0.3s; }
+    .nav-links a:hover { color: var(--arc); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--brass); }
+
+    /* PAGE HERO */
+    .page-hero {
+      position: relative; z-index: 2; padding: 9rem 3rem 4rem;
+      border-bottom: 1px solid rgba(184,115,51,0.12);
+      background: linear-gradient(135deg, rgba(123,47,255,0.05) 0%, rgba(139,26,26,0.06) 50%, transparent 100%);
+    }
+    .breadcrumb { font-family: 'Share Tech Mono', monospace; font-size: 0.63rem; color: var(--ash); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 1.5rem; }
+    .breadcrumb span { color: var(--smolder); }
+    .page-title { font-family: 'Cinzel Decorative', serif; font-size: clamp(2rem, 5vw, 4.5rem); font-weight: 900; color: var(--fog); line-height: 1.1; margin-bottom: 1rem; }
+    .page-title em { color: var(--brass); font-style: normal; display: block; }
+    .page-intro { font-size: 1.05rem; line-height: 1.85; max-width: 600px; color: rgba(232,224,208,0.68); margin-top: 1.5rem; }
+
+    /* FILTER BAR */
+    .filter-bar {
+      position: relative; z-index: 2; padding: 1.5rem 3rem;
+      border-bottom: 1px solid rgba(184,115,51,0.1);
+      display: flex; gap: 0.8rem; flex-wrap: wrap; align-items: center;
+    }
+    .filter-label { font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; color: var(--ash); letter-spacing: 0.2em; text-transform: uppercase; margin-right: 0.5rem; }
+    .filter-btn {
+      font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; letter-spacing: 0.15em;
+      text-transform: uppercase; border: 1px solid rgba(184,115,51,0.2);
+      background: transparent; color: var(--ash); padding: 0.35rem 0.9rem;
+      cursor: pointer; transition: all 0.3s;
+    }
+    .filter-btn:hover, .filter-btn.active { border-color: var(--brass); color: var(--brass); background: rgba(212,168,71,0.05); }
+
+    /* POSTS LAYOUT */
+    .content { position: relative; z-index: 2; padding: 4rem 3rem; }
+    .posts-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 1.5px; background: rgba(184,115,51,0.08); }
+
+    /* POST CARD */
+    .post-card {
+      background: var(--void); padding: 2.4rem; position: relative;
+      overflow: hidden; transition: background 0.35s; cursor: pointer;
+      display: flex; flex-direction: column; gap: 1rem;
+    }
+    .post-card:hover { background: #14101c; }
+    .post-card::after {
+      content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 2px;
+      background: linear-gradient(180deg, var(--ember), var(--plasma));
+      transform: scaleY(0); transform-origin: top; transition: transform 0.4s;
+    }
+    .post-card:hover::after { transform: scaleY(1); }
+
+    /* FEATURED POST - spans full width */
+    .post-card.featured { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 3rem; }
+    .post-card.featured::after { width: 100%; height: 2px; top: 0; bottom: auto; transform: scaleX(0); transform-origin: left; }
+    .post-card.featured:hover::after { transform: scaleX(1); }
+
+    .post-meta { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+    .post-category {
+      font-family: 'Share Tech Mono', monospace; font-size: 0.6rem;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      border: 1px solid var(--smolder); color: var(--smolder);
+      padding: 0.2rem 0.7rem;
+    }
+    .post-date { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--ash); letter-spacing: 0.15em; }
+    .post-title { font-family: 'Cinzel Decorative', serif; font-size: 1.2rem; color: var(--fog); line-height: 1.3; }
+    .post-card.featured .post-title { font-size: 1.6rem; }
+    .post-excerpt { font-size: 0.93rem; line-height: 1.75; color: var(--ash); }
+    .post-footer { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 1rem; border-top: 1px solid rgba(184,115,51,0.1); }
+    .post-read { font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; color: var(--arc); letter-spacing: 0.15em; text-transform: uppercase; }
+    .post-read-time { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: rgba(154,144,128,0.5); letter-spacing: 0.1em; }
+
+    /* TAG CLOUD */
+    .sidebar-section { position: relative; z-index: 2; padding: 0 3rem 4rem; }
+    .section-label { font-family: 'Share Tech Mono', monospace; font-size: 0.63rem; letter-spacing: 0.35em; color: var(--arc); text-transform: uppercase; margin-bottom: 1.2rem; }
+    .section-label::before { content: '// '; color: var(--smolder); }
+    .tag-cloud { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .tag {
+      font-family: 'Share Tech Mono', monospace; font-size: 0.62rem; letter-spacing: 0.12em;
+      text-transform: uppercase; border: 1px solid rgba(184,115,51,0.2); color: var(--ash);
+      padding: 0.35rem 0.9rem; cursor: pointer; transition: all 0.3s;
+    }
+    .tag:hover { border-color: var(--brass); color: var(--brass); }
+
+    /* DIVIDER */
+    .section-divider { position: relative; z-index: 2; height: 1px; background: rgba(184,115,51,0.1); margin: 0 3rem; }
+
+    /* CLOSING SIGNAL */
+    .closing-signal {
+      position: relative; z-index: 2; padding: 4rem 3rem;
+      display: flex; align-items: center; gap: 2rem;
+      border-top: 1px solid rgba(0,229,255,0.07);
+    }
+    .signal-line { flex: 1; height: 1px; background: linear-gradient(90deg, transparent, rgba(0,229,255,0.3), transparent); }
+    .signal-text { font-family: 'Share Tech Mono', monospace; font-size: 0.65rem; color: var(--ash); letter-spacing: 0.25em; text-transform: uppercase; white-space: nowrap; }
+
+    footer { position: relative; z-index: 2; padding: 1.8rem 3rem; border-top: 1px solid rgba(184,115,51,0.08); display: flex; justify-content: space-between; align-items: center; }
+    footer span { font-family: 'Share Tech Mono', monospace; font-size: 0.63rem; color: rgba(154,144,128,0.45); letter-spacing: 0.12em; }
+
+    @media(max-width:768px){
+      nav{padding:1rem 1.5rem} .nav-links{gap:1rem}
+      .page-hero,.content,.filter-bar,.sidebar-section{padding-left:1.5rem;padding-right:1.5rem}
+      .post-card.featured{grid-template-columns:1fr}
+      .posts-grid{grid-template-columns:1fr}
+      footer{flex-direction:column;gap:0.7rem;text-align:center}
+    }
+  </style>
+</head>
+<body>
+
+<div class="circuit-bg">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="100" x2="1440" y2="100" stroke="#7b2fff" stroke-width="0.5" opacity="0.6"/>
+    <line x1="0" y1="300" x2="1440" y2="300" stroke="#b87333" stroke-width="0.5"/>
+    <line x1="0" y1="550" x2="1440" y2="550" stroke="#00e5ff" stroke-width="0.8"/>
+    <line x1="0" y1="750" x2="1440" y2="750" stroke="#00ff9d" stroke-width="0.5"/>
+    <line x1="200" y1="0" x2="200" y2="900" stroke="#7b2fff" stroke-width="0.5" opacity="0.6"/>
+    <line x1="550" y1="0" x2="550" y2="900" stroke="#b87333" stroke-width="0.8"/>
+    <line x1="880" y1="0" x2="880" y2="900" stroke="#00e5ff" stroke-width="0.5"/>
+    <line x1="1200" y1="0" x2="1200" y2="900" stroke="#00ff9d" stroke-width="0.8"/>
+    <circle cx="200" cy="100" r="4" fill="#7b2fff" opacity="0.7"/>
+    <circle cx="550" cy="300" r="4" fill="#b87333"/>
+    <circle cx="880" cy="550" r="6" fill="none" stroke="#00e5ff" stroke-width="1.5"/>
+    <circle cx="1200" cy="750" r="4" fill="#00ff9d"/>
+    <rect x="300" y="620" width="50" height="80" rx="3" fill="none" stroke="#7b2fff" stroke-width="0.8" opacity="0.7"/>
+    <line x1="300" y1="640" x2="280" y2="640" stroke="#7b2fff" stroke-width="0.8" opacity="0.7"/>
+    <line x1="300" y1="660" x2="280" y2="660" stroke="#7b2fff" stroke-width="0.8" opacity="0.7"/>
+    <line x1="300" y1="680" x2="280" y2="680" stroke="#7b2fff" stroke-width="0.8" opacity="0.7"/>
+    <line x1="350" y1="640" x2="370" y2="640" stroke="#00e5ff" stroke-width="0.8"/>
+    <line x1="350" y1="660" x2="370" y2="660" stroke="#00e5ff" stroke-width="0.8"/>
+    <path d="M550 300 L880 550" stroke="#b87333" stroke-width="0.5" fill="none"/>
+    <path d="M200 550 L550 750" stroke="#00ff9d" stroke-width="0.5" fill="none"/>
+  </svg>
+</div>
+
+<div class="embers" id="embers"></div>
+
+<nav>
+  <div class="nav-logo">[YOUR.NAME]</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="learning.html">Learning</a>
+    <a href="about.html">About</a>
+    <a href="thoughts.html" class="active">Thoughts</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <p class="breadcrumb">HOME <span>/</span> THOUGHTS</p>
+  <h1 class="page-title">Raw Signal.<em>Unfiltered Thought.</em></h1>
+  <p class="page-intro">
+    Ideas that wouldn't stay quiet. Observations too specific to ignore.
+    Opinions too honest to leave in a notebook. This is the archive —
+    replace these placeholders with whatever you actually want to say.
+  </p>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <span class="filter-label">Filter:</span>
+  <button class="filter-btn active">All</button>
+  <button class="filter-btn">[Category One]</button>
+  <button class="filter-btn">[Category Two]</button>
+  <button class="filter-btn">[Category Three]</button>
+  <button class="filter-btn">[Category Four]</button>
+</div>
+
+<!-- POSTS -->
+<div class="content">
+  <div class="posts-grid">
+
+    <!-- FEATURED POST -->
+    <div class="post-card featured">
+      <div>
+        <div class="post-meta">
+          <span class="post-category">[Category]</span>
+          <span class="post-date">[Month DD, YYYY]</span>
+        </div>
+        <h2 class="post-title">[Your Most Important Thought Goes Here as the Featured Post Title]</h2>
+      </div>
+      <div>
+        <p class="post-excerpt">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum sed perspiciatis.</p>
+        <div class="post-footer">
+          <span class="post-read">Read more →</span>
+          <span class="post-read-time">[X] min read</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- POST 2 -->
+    <div class="post-card">
+      <div class="post-meta">
+        <span class="post-category">[Category]</span>
+        <span class="post-date">[Month DD, YYYY]</span>
+      </div>
+      <h2 class="post-title">[Post Title Two]</h2>
+      <p class="post-excerpt">Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat duis aute irure dolor.</p>
+      <div class="post-footer">
+        <span class="post-read">Read more →</span>
+        <span class="post-read-time">[X] min read</span>
+      </div>
+    </div>
+
+    <!-- POST 3 -->
+    <div class="post-card">
+      <div class="post-meta">
+        <span class="post-category">[Category]</span>
+        <span class="post-date">[Month DD, YYYY]</span>
+      </div>
+      <h2 class="post-title">[Post Title Three]</h2>
+      <p class="post-excerpt">Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium totam rem aperiam eaque ipsa quae.</p>
+      <div class="post-footer">
+        <span class="post-read">Read more →</span>
+        <span class="post-read-time">[X] min read</span>
+      </div>
+    </div>
+
+    <!-- POST 4 -->
+    <div class="post-card">
+      <div class="post-meta">
+        <span class="post-category">[Category]</span>
+        <span class="post-date">[Month DD, YYYY]</span>
+      </div>
+      <h2 class="post-title">[Post Title Four]</h2>
+      <p class="post-excerpt">Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt neque porro quisquam est qui dolorem ipsum quia dolor sit amet consectetur.</p>
+      <div class="post-footer">
+        <span class="post-read">Read more →</span>
+        <span class="post-read-time">[X] min read</span>
+      </div>
+    </div>
+
+    <!-- POST 5 -->
+    <div class="post-card">
+      <div class="post-meta">
+        <span class="post-category">[Category]</span>
+        <span class="post-date">[Month DD, YYYY]</span>
+      </div>
+      <h2 class="post-title">[Post Title Five]</h2>
+      <p class="post-excerpt">At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti quos dolores et quas molestias excepturi sint occaecati cupiditate non provident similique.</p>
+      <div class="post-footer">
+        <span class="post-read">Read more →</span>
+        <span class="post-read-time">[X] min read</span>
+      </div>
+    </div>
+
+    <!-- POST 6 -->
+    <div class="post-card">
+      <div class="post-meta">
+        <span class="post-category">[Category]</span>
+        <span class="post-date">[Month DD, YYYY]</span>
+      </div>
+      <h2 class="post-title">[Post Title Six]</h2>
+      <p class="post-excerpt">Nam libero tempore cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus omnis voluptas assumenda est omnis dolor repellendus temporibus autem quibusdam.</p>
+      <div class="post-footer">
+        <span class="post-read">Read more →</span>
+        <span class="post-read-time">[X] min read</span>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- TAG CLOUD -->
+<div class="section-divider"></div>
+<div class="sidebar-section" style="padding-top: 3rem;">
+  <p class="section-label">Topics</p>
+  <div class="tag-cloud">
+    <span class="tag">[Topic One]</span>
+    <span class="tag">[Topic Two]</span>
+    <span class="tag">[Topic Three]</span>
+    <span class="tag">[Topic Four]</span>
+    <span class="tag">[Topic Five]</span>
+    <span class="tag">[Topic Six]</span>
+    <span class="tag">[Topic Seven]</span>
+    <span class="tag">[Topic Eight]</span>
+    <span class="tag">[Topic Nine]</span>
+    <span class="tag">[Topic Ten]</span>
+  </div>
+</div>
+
+<!-- CLOSING SIGNAL -->
+<div class="closing-signal">
+  <div class="signal-line"></div>
+  <span class="signal-text">// end of current transmissions — more incoming</span>
+  <div class="signal-line"></div>
+</div>
+
+<footer>
+  <span>© [YEAR] [YOUR NAME] — ALL SYSTEMS OPERATIONAL</span>
+  <span>[YOUR.EMAIL@DOMAIN.COM]</span>
+</footer>
+
+<script>
+  const ec = document.getElementById('embers');
+  const clr = ['#c0392b','#8b1a1a','#d4a847','#7b2fff'];
+  for(let i=0;i<22;i++){
+    const el=document.createElement('div');
+    el.className='ep';
+    const s=Math.random()*4+1;
+    el.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${clr[Math.floor(Math.random()*clr.length)]};animation-duration:${6+Math.random()*10}s;animation-delay:${Math.random()*8}s;box-shadow:0 0 ${s*3}px ${clr[Math.floor(Math.random()*3)]};`;
+    ec.appendChild(el);
+  }
+
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', function() {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      this.classList.add('active');
+    });
+  });
+</script>
+</body>
+</html>

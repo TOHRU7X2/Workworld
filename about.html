@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>[Your Name] | About</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Rajdhani:wght@300;400;600;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --obsidian: #0a0a0f; --void: #0f0e1a; --ember: #8b1a1a; --smolder: #c0392b;
+      --copper: #b87333; --brass: #d4a847; --arc: #00e5ff; --plasma: #7b2fff;
+      --fog: #e8e0d0; --ash: #9a9080;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { background: var(--obsidian); color: var(--fog); font-family: 'Rajdhani', sans-serif; overflow-x: hidden; }
+    .circuit-bg { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+    .circuit-bg svg { width: 100%; height: 100%; opacity: 0.05; }
+    .embers { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+    .ep { position: absolute; border-radius: 50%; animation: rise linear infinite; opacity: 0; }
+    @keyframes rise {
+      0%   { transform: translateY(100vh) scale(1);   opacity: 0; }
+      10%  { opacity: 1; }
+      90%  { opacity: 0.5; }
+      100% { transform: translateY(-10vh) scale(0.3); opacity: 0; }
+    }
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 1.2rem 3rem;
+      background: linear-gradient(180deg, rgba(10,10,15,0.97) 0%, transparent 100%);
+      border-bottom: 1px solid rgba(180,115,51,0.15);
+    }
+    .nav-logo { font-family: 'Cinzel Decorative', serif; font-size: 0.9rem; color: var(--brass); letter-spacing: 0.15em; text-shadow: 0 0 20px rgba(212,168,71,0.4); }
+    .nav-links { display: flex; gap: 2.5rem; }
+    .nav-links a { font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; color: var(--ash); text-decoration: none; letter-spacing: 0.2em; text-transform: uppercase; transition: color 0.3s; position: relative; }
+    .nav-links a::after { content: ''; position: absolute; bottom: -4px; left: 0; right: 0; height: 1px; background: var(--arc); transform: scaleX(0); transition: transform 0.3s; }
+    .nav-links a:hover { color: var(--arc); }
+    .nav-links a:hover::after { transform: scaleX(1); }
+    .nav-links a.active { color: var(--brass); }
+
+    /* PAGE HERO */
+    .page-hero {
+      position: relative; z-index: 2; padding: 9rem 3rem 4rem;
+      border-bottom: 1px solid rgba(184,115,51,0.12);
+      background: linear-gradient(135deg, rgba(139,26,26,0.07) 0%, transparent 60%);
+      display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: end;
+    }
+    .breadcrumb { font-family: 'Share Tech Mono', monospace; font-size: 0.63rem; color: var(--ash); letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 1.5rem; }
+    .breadcrumb span { color: var(--smolder); }
+    .page-title { font-family: 'Cinzel Decorative', serif; font-size: clamp(2rem, 5vw, 4.5rem); font-weight: 900; color: var(--fog); line-height: 1.1; margin-bottom: 1rem; }
+    .page-title em { color: var(--brass); font-style: normal; display: block; }
+    .hero-quote {
+      font-family: 'Cinzel Decorative', serif; font-size: clamp(1rem, 1.8vw, 1.4rem);
+      color: rgba(232,224,208,0.5); line-height: 1.7; font-style: italic;
+      border-left: 2px solid var(--ember); padding-left: 1.5rem;
+    }
+
+    /* MAIN CONTENT */
+    .content { position: relative; z-index: 2; padding: 5rem 3rem; }
+    .two-col { display: grid; grid-template-columns: 1.2fr 1fr; gap: 5rem; align-items: start; }
+
+    /* BIO BLOCKS */
+    .section-label { font-family: 'Share Tech Mono', monospace; font-size: 0.63rem; letter-spacing: 0.35em; color: var(--arc); text-transform: uppercase; margin-bottom: 0.9rem; }
+    .section-label::before { content: '// '; color: var(--smolder); }
+    .section-heading { font-family: 'Cinzel Decorative', serif; font-size: clamp(1.3rem, 2.5vw, 2rem); color: var(--fog); margin-bottom: 1.8rem; line-height: 1.3; }
+    .bio-block { margin-bottom: 2.2rem; }
+    .bio-block p { font-size: 1rem; line-height: 1.9; color: rgba(232,224,208,0.75); margin-bottom: 1rem; }
+    .bio-block p:last-child { margin-bottom: 0; }
+
+    /* SIDEBAR STATS */
+    .sidebar { position: sticky; top: 6rem; }
+    .stat-card {
+      background: var(--void); border: 1px solid rgba(184,115,51,0.12);
+      padding: 1.8rem; margin-bottom: 1rem; position: relative; overflow: hidden;
+      transition: border-color 0.3s;
+    }
+    .stat-card::before {
+      content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, var(--ember), transparent);
+    }
+    .stat-card:hover { border-color: rgba(184,115,51,0.3); }
+    .stat-card-label { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--smolder); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.5rem; }
+    .stat-card-value { font-family: 'Cinzel Decorative', serif; font-size: 1.8rem; color: var(--brass); margin-bottom: 0.3rem; }
+    .stat-card-desc { font-size: 0.88rem; color: var(--ash); line-height: 1.5; }
+
+    /* INTEREST TAGS */
+    .tag-section { margin-top: 3rem; }
+    .tag-label { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--arc); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 1rem; }
+    .tag-label::before { content: '// '; color: var(--smolder); }
+    .tags { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+    .tag {
+      font-family: 'Share Tech Mono', monospace; font-size: 0.65rem;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      border: 1px solid rgba(184,115,51,0.25); color: var(--ash);
+      padding: 0.4rem 0.9rem; transition: all 0.3s;
+    }
+    .tag:hover { border-color: var(--brass); color: var(--brass); }
+
+    /* VALUES SECTION */
+    .values-section { margin-top: 5rem; padding-top: 4rem; border-top: 1px solid rgba(184,115,51,0.1); }
+    .values-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.5px; background: rgba(184,115,51,0.08); margin-top: 2rem; }
+    .value-card { background: var(--void); padding: 2rem; position: relative; overflow: hidden; transition: background 0.3s; }
+    .value-card:hover { background: #14101c; }
+    .value-card::after { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, var(--ember), var(--plasma)); transform: scaleX(0); transform-origin: left; transition: transform 0.4s; }
+    .value-card:hover::after { transform: scaleX(1); }
+    .value-icon { font-family: 'Share Tech Mono', monospace; font-size: 0.6rem; color: var(--smolder); letter-spacing: 0.2em; margin-bottom: 0.8rem; display: block; }
+    .value-title { font-family: 'Cinzel Decorative', serif; font-size: 1rem; color: var(--brass); margin-bottom: 0.7rem; }
+    .value-text { font-size: 0.9rem; line-height: 1.7; color: var(--ash); }
+
+    /* PULL TO NEXT */
+    .next-pull { position: relative; z-index: 2; text-align: center; padding: 5rem 3rem; border-top: 1px solid rgba(0,229,255,0.07); background: linear-gradient(180deg, transparent, rgba(139,26,26,0.05)); }
+    .next-pull p { font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; letter-spacing: 0.3em; color: var(--ash); text-transform: uppercase; margin-bottom: 1.4rem; }
+    .next-pull h2 { font-family: 'Cinzel Decorative', serif; font-size: clamp(1.3rem, 2.8vw, 2.2rem); color: var(--fog); margin-bottom: 2rem; line-height: 1.5; }
+    .next-pull h2 em { color: var(--brass); font-style: normal; }
+    .pulse-link { display: inline-block; font-family: 'Share Tech Mono', monospace; font-size: 0.72rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--arc); text-decoration: none; border: 1px solid rgba(0,229,255,0.28); padding: 1rem 2.5rem; position: relative; overflow: hidden; transition: all 0.4s; }
+    .pulse-link::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(0,229,255,0.12), transparent 70%); animation: pglow 2.5s ease-in-out infinite; }
+    @keyframes pglow { 0%,100%{opacity:0.4;transform:scale(0.9)} 50%{opacity:1;transform:scale(1.1)} }
+    .pulse-link:hover { background: rgba(0,229,255,0.07); box-shadow: 0 0 40px rgba(0,229,255,0.25); }
+
+    footer { position: relative; z-index: 2; padding: 1.8rem 3rem; border-top: 1px solid rgba(184,115,51,0.08); display: flex; justify-content: space-between; align-items: center; }
+    footer span { font-family: 'Share Tech Mono', monospace; font-size: 0.63rem; color: rgba(154,144,128,0.45); letter-spacing: 0.12em; }
+
+    @media(max-width:900px){
+      .page-hero { grid-template-columns: 1fr; gap: 2rem; }
+      .two-col { grid-template-columns: 1fr; gap: 3rem; }
+      .sidebar { position: static; }
+    }
+    @media(max-width:768px){
+      nav{padding:1rem 1.5rem} .nav-links{gap:1rem}
+      .page-hero,.content{padding-left:1.5rem;padding-right:1.5rem}
+      footer{flex-direction:column;gap:0.7rem;text-align:center}
+    }
+  </style>
+</head>
+<body>
+
+<div class="circuit-bg">
+  <svg viewBox="0 0 1440 900" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    <line x1="0" y1="150" x2="1440" y2="150" stroke="#00ff9d" stroke-width="0.8"/>
+    <line x1="0" y1="380" x2="1440" y2="380" stroke="#b87333" stroke-width="0.5"/>
+    <line x1="0" y1="600" x2="1440" y2="600" stroke="#00e5ff" stroke-width="0.8"/>
+    <line x1="150" y1="0" x2="150" y2="900" stroke="#b87333" stroke-width="0.5"/>
+    <line x1="500" y1="0" x2="500" y2="900" stroke="#00ff9d" stroke-width="0.8"/>
+    <line x1="900" y1="0" x2="900" y2="900" stroke="#00e5ff" stroke-width="0.5"/>
+    <line x1="1250" y1="0" x2="1250" y2="900" stroke="#b87333" stroke-width="0.8"/>
+    <circle cx="150" cy="150" r="4" fill="#b87333"/>
+    <circle cx="500" cy="380" r="4" fill="#00ff9d"/>
+    <circle cx="900" cy="600" r="4" fill="#00e5ff"/>
+    <circle cx="1250" cy="150" r="6" fill="none" stroke="#b87333" stroke-width="1.5"/>
+    <rect x="620" y="440" width="60" height="100" rx="3" fill="none" stroke="#00ff9d" stroke-width="0.8"/>
+    <line x1="620" y1="460" x2="600" y2="460" stroke="#00ff9d" stroke-width="0.8"/>
+    <line x1="620" y1="480" x2="600" y2="480" stroke="#00ff9d" stroke-width="0.8"/>
+    <line x1="620" y1="500" x2="600" y2="500" stroke="#00ff9d" stroke-width="0.8"/>
+    <line x1="680" y1="460" x2="700" y2="460" stroke="#00e5ff" stroke-width="0.8"/>
+    <line x1="680" y1="480" x2="700" y2="480" stroke="#00e5ff" stroke-width="0.8"/>
+    <line x1="680" y1="500" x2="700" y2="500" stroke="#00e5ff" stroke-width="0.8"/>
+    <path d="M150 380 L500 600" stroke="#00e5ff" stroke-width="0.5" fill="none"/>
+    <path d="M900 150 L1250 380" stroke="#b87333" stroke-width="0.5" fill="none"/>
+  </svg>
+</div>
+
+<div class="embers" id="embers"></div>
+
+<nav>
+  <div class="nav-logo">[YOUR.NAME]</div>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="learning.html">Learning</a>
+    <a href="about.html" class="active">About</a>
+    <a href="thoughts.html">Thoughts</a>
+  </div>
+</nav>
+
+<div class="page-hero">
+  <div>
+    <p class="breadcrumb">HOME <span>/</span> ABOUT</p>
+    <h1 class="page-title">The Person<em>Behind the Work</em></h1>
+  </div>
+  <p class="hero-quote">
+    "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
+    incididunt ut labore et dolore magna aliqua — the quiet engine of certainty."
+  </p>
+</div>
+
+<div class="content">
+  <div class="two-col">
+
+    <!-- BIOGRAPHY -->
+    <div>
+      <p class="section-label">Biography</p>
+      <h2 class="section-heading">A Life Lived at the Edge of What's Possible</h2>
+
+      <div class="bio-block">
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+        <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam eaque ipsa quae ab illo inventore veritatis.</p>
+      </div>
+
+      <div class="bio-block">
+        <p>Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt.</p>
+        <p>Ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur?</p>
+      </div>
+
+      <div class="bio-block">
+        <p>Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur. At vero eos et accusamus et iusto odio dignissimos ducimus qui blanditiis praesentium voluptatum deleniti atque corrupti.</p>
+        <p>Nam libero tempore, cum soluta nobis est eligendi optio cumque nihil impedit quo minus id quod maxime placeat facere possimus, omnis voluptas assumenda est, omnis dolor repellendus. Temporibus autem quibusdam et aut officiis debitis aut rerum necessitatibus saepe eveniet.</p>
+      </div>
+
+      <!-- INTEREST TAGS -->
+      <div class="tag-section">
+        <p class="tag-label">Areas of Interest</p>
+        <div class="tags">
+          <span class="tag">[Interest One]</span>
+          <span class="tag">[Interest Two]</span>
+          <span class="tag">[Interest Three]</span>
+          <span class="tag">[Interest Four]</span>
+          <span class="tag">[Interest Five]</span>
+          <span class="tag">[Interest Six]</span>
+          <span class="tag">[Interest Seven]</span>
+          <span class="tag">[Interest Eight]</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+      <div class="stat-card">
+        <p class="stat-card-label">Based In</p>
+        <p class="stat-card-value">[City, State]</p>
+        <p class="stat-card-desc">Operating remotely and reaching clients across the country.</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card-label">Degree</p>
+        <p class="stat-card-value">B.S.</p>
+        <p class="stat-card-desc">Applied Information Technology — [University Name], [Year]</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card-label">Years Active</p>
+        <p class="stat-card-value">[XX]+</p>
+        <p class="stat-card-desc">Years working in technology, education, and digital consulting.</p>
+      </div>
+      <div class="stat-card">
+        <p class="stat-card-label">Contact</p>
+        <p class="stat-card-value" style="font-size:1rem; margin-bottom:0.5rem;">[YOUR.EMAIL@DOMAIN.COM]</p>
+        <p class="stat-card-desc">[Phone or preferred contact method]</p>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- VALUES -->
+  <div class="values-section">
+    <p class="section-label">Core Values</p>
+    <h2 class="section-heading">What I Stand On</h2>
+    <div class="values-grid">
+      <div class="value-card">
+        <span class="value-icon">01 // PRINCIPLE</span>
+        <h3 class="value-title">[Value One]</h3>
+        <p class="value-text">Lorem ipsum dolor sit amet consectetur adipiscing elit sed do eiusmod tempor incididunt ut labore et dolore magna.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">02 // PRINCIPLE</span>
+        <h3 class="value-title">[Value Two]</h3>
+        <p class="value-text">Ut enim ad minim veniam quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">03 // PRINCIPLE</span>
+        <h3 class="value-title">[Value Three]</h3>
+        <p class="value-text">Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur excepteur.</p>
+      </div>
+      <div class="value-card">
+        <span class="value-icon">04 // PRINCIPLE</span>
+        <h3 class="value-title">[Value Four]</h3>
+        <p class="value-text">Excepteur sint occaecat cupidatat non proident sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="next-pull">
+  <p>// next transmission</p>
+  <h2>Credentials and biography shape the frame.<br>The <em>thoughts</em> reveal what lives inside it.</h2>
+  <a href="thoughts.html" class="pulse-link">Enter the Thought Archive →</a>
+</div>
+
+<footer>
+  <span>© [YEAR] [YOUR NAME] — ALL SYSTEMS OPERATIONAL</span>
+  <span>[YOUR.EMAIL@DOMAIN.COM]</span>
+</footer>
+
+<script>
+  const ec = document.getElementById('embers');
+  const clr = ['#c0392b','#8b1a1a','#d4a847','#b87333'];
+  for(let i=0;i<22;i++){
+    const el=document.createElement('div');
+    el.className='ep';
+    const s=Math.random()*4+1;
+    el.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${clr[Math.floor(Math.random()*clr.length)]};animation-duration:${6+Math.random()*10}s;animation-delay:${Math.random()*8}s;box-shadow:0 0 ${s*3}px ${clr[Math.floor(Math.random()*3)]};`;
+    ec.appendChild(el);
+  }
+</script>
+</body>
+</html>
